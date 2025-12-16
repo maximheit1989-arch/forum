@@ -20,24 +20,36 @@ import java.util.Set;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name = "id")
+    private long id;
     @Setter
+    @Column(name = "title")
     private String title;
-
     @Setter
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-
     @Setter
+    @Column(name = "author")
     private String author;
-    private final LocalDateTime dateCreated = LocalDateTime.now();
-
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated = LocalDateTime.now();
     @ManyToMany
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_name")
+    )
     private Set<Tag> tags = new HashSet<>();
-
+    @Column(name = "likes")
     private int likes;
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    public Post(String title, String content, String author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
 
     public Post(String title, String content, String author, Set<String> tags) {
         this.title = title;
@@ -54,4 +66,7 @@ public class Post {
         likes++;
     }
 
+    public boolean addTag(Tag tag) {
+        return tags.add(tag);
+    }
 }
