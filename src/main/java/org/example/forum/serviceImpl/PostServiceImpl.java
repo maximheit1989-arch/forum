@@ -1,5 +1,6 @@
 package org.example.forum.serviceImpl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.forum.dao.CommentRepository;
 import org.example.forum.dao.PostRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostServiceImpl implements ForumService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
@@ -47,7 +49,7 @@ public class PostServiceImpl implements ForumService {
                         .stream()
                         .map(c -> {
                             CommentDto cd = new CommentDto();
-                            cd.setUser(c.getUser());
+                            cd.setUser(c.getUsername());
                             cd.setMessage(c.getMessage());
                             cd.setDateCreated(c.getDateCreated());
                             cd.setLikes(c.getLikes());
